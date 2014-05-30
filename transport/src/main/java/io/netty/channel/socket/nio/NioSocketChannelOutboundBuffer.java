@@ -272,7 +272,7 @@ public final class NioSocketChannelOutboundBuffer extends ChannelOutboundBuffer 
                 }
                 e.msg = null;
             }
-            promiseNotifier.notifyFlushFutures(cause);
+            increaseAndNotify(size, cause);
             return size;
         } finally {
             tail = unflushed;
