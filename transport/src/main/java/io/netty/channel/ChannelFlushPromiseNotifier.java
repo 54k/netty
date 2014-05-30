@@ -292,6 +292,8 @@ public final class ChannelFlushPromiseNotifier {
         } else {
             Arrays.fill(flushCheckpoints, null);
         }
+        head = 0;
+        tail = 0;
     }
 
     /**
