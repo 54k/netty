@@ -89,14 +89,14 @@ public final class NioSocketChannelOutboundBuffer extends ChannelOutboundBuffer 
         promiseNotifier.add(promise, estimatedSize);
         if (msg instanceof ByteBuf) {
             ByteBuf buf = (ByteBuf) msg;
-            /*if (lastEntry != null && !lastEntry.flushed && lastEntry.msg instanceof ByteBuf) {
+            if (lastEntry != null && !lastEntry.flushed && lastEntry.msg instanceof ByteBuf) {
                 ByteBuf lastBuf = (ByteBuf) lastEntry.msg;
                 if (lastBuf.isWritable(buf.readableBytes())) {
                     lastBuf.writeBytes(buf);
                     safeRelease(buf);
                     return;
                 }
-            }*/
+            }
             if (!buf.isDirect()) {
                 msg = copyToDirectByteBuf(buf);
             }
@@ -285,6 +285,7 @@ public final class NioSocketChannelOutboundBuffer extends ChannelOutboundBuffer 
         tail = 0;
 
         promiseNotifier.reset();
+        lastEntry = null;
 
         // take care of recycle the ByteBuffer[] structure.
         if (nioBuffers.length > INITIAL_CAPACITY) {
