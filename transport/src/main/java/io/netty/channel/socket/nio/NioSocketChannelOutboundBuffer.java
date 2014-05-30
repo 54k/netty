@@ -94,6 +94,11 @@ public final class NioSocketChannelOutboundBuffer extends ChannelOutboundBuffer 
                 if (lastBuf.isWritable(buf.readableBytes())) {
                     lastBuf.writeBytes(buf);
                     safeRelease(buf);
+                    lastEntry.pendingSize += estimatedSize;
+                    lastEntry.total += total(msg);
+                    lastEntry.buf = null;
+                    lastEntry.buffers = null;
+                    lastEntry.count = -1;
                     return;
                 }
             }
@@ -192,6 +197,9 @@ public final class NioSocketChannelOutboundBuffer extends ChannelOutboundBuffer 
     @Override
     protected int remove0() {
         Entry e = buffer[flushed];
+        if (lastEntry == e) {
+            lastEntry = null;
+        }
         Object msg = e.msg;
         int size = e.pendingSize;
 
@@ -212,6 +220,9 @@ public final class NioSocketChannelOutboundBuffer extends ChannelOutboundBuffer 
     @Override
     protected int remove0(Throwable cause) {
         Entry e = buffer[flushed];
+        if (lastEntry == e) {
+            lastEntry = null;
+        }
         Object msg = e.msg;
         int size = e.pendingSize;
 
